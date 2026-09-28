@@ -1,0 +1,2947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedLens AI — Next-Gen Medical Report Intelligence</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       CSS Variables & Design Tokens (Modern Clinical Glassmorphism)
+       ========================================================================== */
+    :root {
+      /* Brand Color Palette */
+      --primary: #0d9488;
+      --primary-hover: #0f766e;
+      --primary-light: #ccfbf1;
+      --primary-subtle: #f0fdfa;
+      --primary-glow: rgba(13, 148, 136, 0.28);
+
+      --accent-cyan: #06b6d4;
+      --accent-blue: #3b82f6;
+      --accent-indigo: #6366f1;
+
+      /* Neutral & Surface System (Light Mode) */
+      --bg: #f8fafc;
+      --bg-pattern: radial-gradient(at 15% 15%, rgba(13, 148, 136, 0.08) 0px, transparent 50%),
+                    radial-gradient(at 85% 20%, rgba(6, 182, 212, 0.07) 0px, transparent 48%),
+                    radial-gradient(at 50% 90%, rgba(99, 102, 241, 0.04) 0px, transparent 55%),
+                    #f8fafc;
+      --surface: rgba(255, 255, 255, 0.85);
+      --surface-solid: #ffffff;
+      --surface-secondary: #f1f5f9;
+      --surface-hover: #f8fafc;
+      --card-border: rgba(226, 232, 240, 0.9);
+      --card-border-subtle: rgba(241, 245, 249, 0.9);
+
+      /* Typography Colors */
+      --text-main: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      --text-subtle: #94a3b8;
+
+      /* Medical Clinical Semantic Colors */
+      --status-normal: #10b981;
+      --status-normal-bg: #ecfdf5;
+      --status-normal-border: #a7f3d0;
+      --status-normal-text: #065f46;
+
+      --status-warning: #f59e0b;
+      --status-warning-bg: #fffbeb;
+      --status-warning-border: #fde68a;
+      --status-warning-text: #92400e;
+
+      --status-alert: #ef4444;
+      --status-alert-bg: #fef2f2;
+      --status-alert-border: #fecaca;
+      --status-alert-text: #991b1b;
+
+      /* Shadows & Radii */
+      --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-sm: 0 4px 12px -2px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 12px 28px -6px rgba(15, 23, 42, 0.08), 0 4px 10px -4px rgba(15, 23, 42, 0.04);
+      --shadow-lg: 0 22px 48px -12px rgba(15, 23, 42, 0.12), 0 8px 16px -6px rgba(15, 23, 42, 0.05);
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --radius-xl: 28px;
+    }
+
+    /* Dark Mode Theme */
+    [data-theme="dark"] {
+      --primary: #14b8a6;
+      --primary-hover: #2dd4bf;
+      --primary-light: rgba(20, 184, 166, 0.15);
+      --primary-subtle: rgba(20, 184, 166, 0.08);
+      --primary-glow: rgba(20, 184, 166, 0.35);
+
+      --bg: #090d16;
+      --bg-pattern: radial-gradient(at 15% 15%, rgba(20, 184, 166, 0.12) 0px, transparent 55%),
+                    radial-gradient(at 85% 20%, rgba(6, 182, 212, 0.09) 0px, transparent 50%),
+                    radial-gradient(at 50% 90%, rgba(99, 102, 241, 0.08) 0px, transparent 60%),
+                    #090d16;
+      --surface: rgba(17, 24, 39, 0.85);
+      --surface-solid: #111827;
+      --surface-secondary: #1e293b;
+      --surface-hover: #1f293d;
+      --card-border: rgba(255, 255, 255, 0.09);
+      --card-border-subtle: rgba(255, 255, 255, 0.05);
+
+      --text-main: #f8fafc;
+      --text-body: #cbd5e1;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+
+      --status-normal-bg: rgba(16, 185, 129, 0.14);
+      --status-normal-border: rgba(16, 185, 129, 0.3);
+      --status-normal-text: #34d399;
+
+      --status-warning-bg: rgba(245, 158, 11, 0.14);
+      --status-warning-border: rgba(245, 158, 11, 0.3);
+      --status-warning-text: #fbbf24;
+
+      --status-alert-bg: rgba(239, 68, 68, 0.15);
+      --status-alert-border: rgba(239, 68, 68, 0.35);
+      --status-alert-text: #f87171;
+
+      --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 16px 36px rgba(0, 0, 0, 0.45);
+      --shadow-lg: 0 24px 50px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Base Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-pattern);
+      background-attachment: fixed;
+      color: var(--text-body);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    button, input, select {
+      font-family: inherit;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .app-container {
+      width: min(1280px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 30px 0 80px;
+    }
+
+    /* ==========================================================================
+       Header & Navigation Bar
+       ========================================================================== */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 22px;
+      margin-bottom: 38px;
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #0d9488, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 6px 18px var(--primary-glow);
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-logo-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-title span {
+      background: linear-gradient(135deg, var(--primary), var(--accent-cyan));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .brand-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .brand-tagline {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border-radius: 100px;
+      background: var(--surface-secondary);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      position: relative;
+    }
+
+    .pulse-dot::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: #10b981;
+      opacity: 0.4;
+      animation: pulseGlow 2s infinite ease-out;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    .theme-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: var(--surface-secondary);
+      color: var(--text-main);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .theme-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       Hero Section
+       ========================================================================== */
+    .hero-section {
+      text-align: center;
+      max-width: 840px;
+      margin: 0 auto 36px;
+      padding: 0 10px;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      background: var(--primary-subtle);
+      border: 1px solid var(--primary-light);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    .hero-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(34px, 5.2vw, 54px);
+      font-weight: 800;
+      line-height: 1.14;
+      letter-spacing: -1.6px;
+      color: var(--text-main);
+      margin-bottom: 16px;
+    }
+
+    .hero-title .gradient-text {
+      background: linear-gradient(135deg, #0d9488 20%, #06b6d4 70%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(15px, 2vw, 17px);
+      color: var(--text-muted);
+      line-height: 1.65;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Quick Demo Bar */
+    .demo-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .demo-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .demo-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--surface);
+      border: 1px solid var(--card-border);
+      border-radius: 100px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .demo-pill-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-subtle);
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       Upload Section
+       ========================================================================== */
+    .upload-wrapper {
+      max-width: 860px;
+      margin: 0 auto 30px;
+    }
+
+    .upload-card {
+      background: var(--surface);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      padding: 12px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .upload-inner {
+      border: 2px dashed rgba(13, 148, 136, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 42px 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .upload-inner:hover,
+    .upload-inner.dragging {
+      border-color: var(--primary);
+      background: var(--primary-subtle);
+      transform: scale(0.996);
+    }
+
+    .upload-icon-container {
+      width: 76px;
+      height: 76px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(13, 148, 136, 0.12), rgba(6, 182, 212, 0.16));
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 24px rgba(13, 148, 136, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .upload-inner:hover .upload-icon-container {
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    .upload-icon-container svg {
+      width: 36px;
+      height: 36px;
+      stroke-width: 2.2;
+    }
+
+    .upload-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .upload-desc {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+
+    .btn-choose {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), #0f766e);
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 8px 20px var(--primary-glow);
+      transition: all 0.2s ease;
+      pointer-events: none;
+    }
+
+    .upload-inner:hover .btn-choose {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px var(--primary-glow);
+    }
+
+    .upload-support-text {
+      margin-top: 18px;
+      font-size: 12.5px;
+      color: var(--text-subtle);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .support-pill {
+      background: var(--surface-secondary);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 11px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    /* Selected File Bar */
+    .file-chip {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 16px;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      background: var(--primary-subtle);
+      border: 1px solid var(--primary-light);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .file-chip-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .file-chip-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .file-chip-details {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .file-chip-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-chip-size {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .file-chip-remove {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .file-chip-remove:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--status-alert);
+    }
+
+    .upload-action-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 18px;
+    }
+
+    .btn-analyze-main {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 34px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0d9488, #0891b2);
+      color: white;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(13, 148, 136, 0.35);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-analyze-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(13, 148, 136, 0.45);
+    }
+
+    .btn-analyze-main:active {
+      transform: translateY(0);
+    }
+
+    /* ==========================================================================
+       Loading State Animation
+       ========================================================================== */
+    .loader-wrap {
+      display: none;
+      max-width: 580px;
+      margin: 30px auto;
+      text-align: center;
+    }
+
+    .loader-box {
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 34px 28px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loader-radar {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .radar-circle {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid var(--primary-light);
+      border-top-color: var(--primary);
+      animation: spin 1s linear infinite;
+    }
+
+    .radar-center-icon {
+      color: var(--primary);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .loader-step-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      min-height: 22px;
+    }
+
+    .progress-bar-track {
+      height: 6px;
+      background: var(--surface-secondary);
+      border-radius: 100px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 40%;
+      background: linear-gradient(90deg, var(--primary), var(--accent-cyan));
+      border-radius: 100px;
+      animation: progressShim 2s infinite ease-in-out;
+    }
+
+    @keyframes progressShim {
+      0% { width: 10%; margin-left: 0; }
+      50% { width: 60%; margin-left: 20%; }
+      100% { width: 100%; margin-left: 0; }
+    }
+
+    /* Error Banner */
+    .error-card {
+      display: none;
+      max-width: 860px;
+      margin: 20px auto;
+      padding: 18px 22px;
+      border-radius: var(--radius-md);
+      background: var(--status-alert-bg);
+      border: 1px solid var(--status-alert-border);
+      color: var(--status-alert-text);
+      font-size: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ==========================================================================
+       Results Section & Dashboard
+       ========================================================================== */
+    .results-section {
+      display: none;
+      margin-top: 40px;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Results Header & Actions */
+    .results-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .results-heading h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.7px;
+      color: var(--text-main);
+    }
+
+    .results-heading p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .results-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 11px;
+      border: 1px solid var(--card-border);
+      background: var(--surface);
+      color: var(--text-body);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .action-btn:hover {
+      background: var(--surface-secondary);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .action-btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .action-btn-primary:hover {
+      background: var(--primary-hover);
+      color: white;
+    }
+
+    /* Executive Summary Card (Bento Style) */
+    .summary-bento {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 26px;
+    }
+
+    @media (max-width: 900px) {
+      .summary-bento {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .summary-main-card {
+      background: var(--surface);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .summary-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .report-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .confidence-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: var(--status-normal-bg);
+      color: var(--status-normal-text);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .summary-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .summary-text {
+      font-size: 14.5px;
+      color: var(--text-body);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    /* What it Means Plain English Highlight Card */
+    .plain-english-box {
+      background: linear-gradient(135deg, rgba(13, 148, 136, 0.08), rgba(6, 182, 212, 0.05));
+      border: 1px solid rgba(13, 148, 136, 0.25);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      position: relative;
+    }
+
+    .plain-english-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .plain-english-content {
+      font-size: 14px;
+      color: var(--text-main);
+      font-weight: 500;
+      line-height: 1.65;
+    }
+
+    /* Summary Side Card (Health Index Snapshot) */
+    .summary-side-card {
+      background: var(--surface);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .side-card-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .health-status-score-wrap {
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .health-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      margin-bottom: 12px;
+    }
+
+    .health-status-pill.status-optimal {
+      background: var(--status-normal-bg);
+      border: 1px solid var(--status-normal-border);
+      color: var(--status-normal-text);
+    }
+
+    .health-status-pill.status-review {
+      background: var(--status-warning-bg);
+      border: 1px solid var(--status-warning-border);
+      color: var(--status-warning-text);
+    }
+
+    .side-metric-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--card-border-subtle);
+      font-size: 13.5px;
+    }
+
+    .side-metric-row:last-child {
+      border-bottom: none;
+    }
+
+    .side-metric-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .side-metric-val {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* ==========================================================================
+       4 Stat KPI Cards
+       ========================================================================== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 900px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 500px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .kpi-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .kpi-icon-wrap.teal {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .kpi-icon-wrap.green {
+      background: var(--status-normal-bg);
+      color: var(--status-normal);
+    }
+
+    .kpi-icon-wrap.amber {
+      background: var(--status-warning-bg);
+      color: var(--status-warning);
+    }
+
+    .kpi-icon-wrap.blue {
+      background: #eff6ff;
+      color: var(--accent-blue);
+    }
+
+    .kpi-data {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kpi-number {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .kpi-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       Biomarkers Explorer Section (Core Table & Card Switcher)
+       ========================================================================== */
+    .biomarkers-card {
+      background: var(--surface);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      padding: 24px 26px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 28px;
+    }
+
+    /* Explorer Controls Header */
+    .biomarker-controls-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .biomarkers-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .biomarkers-title-group h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .biomarkers-count-pill {
+      padding: 4px 11px;
+      border-radius: 100px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Search & Filter Bar */
+    .biomarker-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .search-box-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .search-box-wrap svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 16px;
+      height: 16px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 14px 10px 38px;
+      border-radius: 11px;
+      border: 1px solid var(--card-border);
+      background: var(--surface-secondary);
+      color: var(--text-main);
+      font-size: 13.5px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+      background: var(--surface-solid);
+    }
+
+    /* Filter Segments */
+    .filter-pills-group {
+      display: flex;
+      background: var(--surface-secondary);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      gap: 4px;
+    }
+
+    .filter-btn {
+      border: none;
+      background: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn.active {
+      background: var(--surface-solid);
+      color: var(--text-main);
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* View Switcher */
+    .view-switcher-group {
+      display: flex;
+      background: var(--surface-secondary);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      gap: 4px;
+    }
+
+    .view-toggle-btn {
+      border: none;
+      background: none;
+      width: 34px;
+      height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .view-toggle-btn.active {
+      background: var(--surface-solid);
+      color: var(--primary);
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* Table Design */
+    .table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: var(--surface-solid);
+      box-shadow: var(--shadow-xs);
+    }
+
+    table {
+      width: 100%;
+      min-width: 1020px;
+      table-layout: fixed;
+      border-collapse: separate;
+      border-spacing: 0;
+      text-align: left;
+    }
+
+    thead {
+      background: var(--surface-secondary);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    th {
+      padding: 14px 16px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      vertical-align: middle;
+      border-bottom: 1px solid var(--card-border);
+      white-space: nowrap;
+    }
+
+    /* Column Widths (Sum = 100%) */
+    th.col-biomarker { width: 20%; }
+    th.col-result { width: 13%; }
+    th.col-reference { width: 12%; }
+    th.col-status { width: 12%; }
+    th.col-definition { width: 21%; }
+    th.col-meaning { width: 22%; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--card-border-subtle);
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: var(--surface-hover);
+    }
+
+    td {
+      padding: 18px 16px;
+      vertical-align: top;
+      font-size: 13.5px;
+      border-bottom: 1px solid var(--card-border-subtle);
+    }
+
+    /* Cell Content Styling */
+    .biomarker-cell {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .biomarker-icon-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--surface-secondary);
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      border: 1px solid var(--card-border);
+      margin-top: 1px;
+    }
+
+    .biomarker-names {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .biomarker-main-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-main);
+      line-height: 1.35;
+    }
+
+    .biomarker-organ-tag {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .result-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 13.5px;
+      color: var(--text-main);
+      padding: 5px 10px;
+      background: var(--surface-secondary);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      display: inline-block;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .reference-text {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.45;
+      display: inline-block;
+      padding-top: 4px;
+      word-break: break-word;
+    }
+
+    /* Status Pills */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+    .status-pill.status-normal {
+      background: var(--status-normal-bg);
+      border: 1px solid var(--status-normal-border);
+      color: var(--status-normal-text);
+    }
+
+    .status-pill.status-warning {
+      background: var(--status-warning-bg);
+      border: 1px solid var(--status-warning-border);
+      color: var(--status-warning-text);
+    }
+
+    .status-pill.status-alert {
+      background: var(--status-alert-bg);
+      border: 1px solid var(--status-alert-border);
+      color: var(--status-alert-text);
+    }
+
+    .status-dot-sm {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .explanation-cell {
+      width: 100%;
+      font-size: 13px;
+      color: var(--text-body);
+      line-height: 1.6;
+      word-wrap: break-word;
+      padding-top: 2px;
+    }
+
+    .what-it-means-cell {
+      width: 100%;
+      font-size: 13px;
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 12px 14px;
+      background: var(--primary-subtle);
+      border-left: 3px solid var(--primary);
+      border-radius: 0 10px 10px 0;
+      font-weight: 500;
+      word-wrap: break-word;
+      box-sizing: border-box;
+    }
+
+    /* Grid View Styling (When card view is active) */
+    .biomarkers-grid {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 18px;
+    }
+
+    .biomarker-card-item {
+      background: var(--surface-solid);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .biomarker-card-item:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+      border-color: var(--primary);
+    }
+
+    .biomarker-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .biomarker-card-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      background: var(--surface-secondary);
+      border-radius: 10px;
+    }
+
+    .biomarker-card-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .biomarker-card-ref {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .biomarker-card-body {
+      font-size: 13px;
+      color: var(--text-body);
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    .biomarker-card-meaning {
+      background: var(--primary-subtle);
+      border-left: 3px solid var(--primary);
+      padding: 10px 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 12.5px;
+      color: var(--text-main);
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       Recommendations & Smart Doctor Questions
+       ========================================================================== */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 860px) {
+      .insights-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .insight-card {
+      background: var(--surface);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .insight-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .insight-icon-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+    }
+
+    .insight-icon-wrap.recommend {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .insight-icon-wrap.questions {
+      background: #eff6ff;
+      color: var(--accent-blue);
+    }
+
+    .insight-header h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .recommendations-list, .questions-list {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .recommendation-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--surface-solid);
+      border: 1px solid var(--card-border-subtle);
+      font-size: 13.5px;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+
+    .recommendation-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Medical Disclaimer */
+    .disclaimer-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px 22px;
+      border-radius: var(--radius-md);
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    [data-theme="dark"] .disclaimer-card {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.28);
+      color: #fde68a;
+    }
+
+    .disclaimer-icon-wrap {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid var(--card-border);
+      color: var(--text-subtle);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Print Stylesheet */
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .topbar, .hero-section, .upload-wrapper, .biomarker-toolbar, .action-btn, .theme-btn, .footer-right {
+        display: none !important;
+      }
+      .results-section {
+        display: block !important;
+        margin-top: 0 !important;
+      }
+      .summary-bento, .biomarkers-card, .insight-card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        background: white !important;
+      }
+      table {
+        min-width: 100% !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app-container">
+
+  <!-- ========================================================================
+       Top Navigation Bar
+       ======================================================================== -->
+  <header class="topbar">
+    <div class="brand-wrap">
+      <div class="brand-logo-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 4v16m-8-8h16"></path>
+          <circle cx="12" cy="12" r="9"></circle>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">
+          Med<span>Lens</span> AI
+          <span class="brand-badge">Clinical v2.4</span>
+        </div>
+        <span class="brand-tagline">Medical Report Intelligence & Plain English Decoder</span>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <div class="security-badge">
+        <span class="pulse-dot"></span>
+        <span>End-to-End Private & Encrypted</span>
+      </div>
+
+      <button class="theme-btn" id="themeToggleBtn" title="Toggle Light / Dark mode" aria-label="Toggle theme">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       Hero Section
+       ======================================================================== -->
+  <section class="hero-section">
+    <div class="hero-pill">
+      <span>✦ AI Clinical Document Intelligence</span>
+    </div>
+
+    <h1 class="hero-title">
+      Understand your medical reports <br/>
+      <span class="gradient-text">with absolute clarity.</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Upload diagnostic imaging scans, blood work panels, or pathology findings.
+      MedLens AI automatically extracts complex biomarkers, validates reference ranges,
+      and translates technical clinical jargon into clear, reassuring plain English.
+    </p>
+
+    <!-- Quick Demo Testing Buttons -->
+    <div class="demo-bar">
+      <span class="demo-label">💡 Try Sample Report:</span>
+      <button class="demo-pill-btn" id="demoUltrasoundBtn">
+        <span>🩺</span> Abdominal Ultrasound
+      </button>
+      <button class="demo-pill-btn" id="demoCbcBtn">
+        <span>🩸</span> Complete Blood Count (CBC)
+      </button>
+      <button class="demo-pill-btn" id="demoLipidBtn">
+        <span>🧪</span> Lipid & Metabolic Panel
+      </button>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       Upload Section
+       ======================================================================== -->
+  <div class="upload-wrapper">
+    <section class="upload-card">
+
+      <label for="reportInput" class="upload-inner" id="dropZone">
+        <div class="upload-icon-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+        </div>
+
+        <h3 class="upload-title">Drop your medical report here</h3>
+        <p class="upload-desc">Drag and drop your file or click to select from your device</p>
+
+        <span class="btn-choose">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 5v14M5 12h14"></path>
+          </svg>
+          Choose Report Document
+        </span>
+
+        <div class="upload-support-text">
+          <span>Supported:</span>
+          <span class="support-pill">PDF Document</span>
+          <span class="support-pill">PNG / JPG</span>
+          <span class="support-pill">WEBP</span>
+          <span>· Maximum size: 10 MB</span>
+        </div>
+      </label>
+
+      <input
+        type="file"
+        id="reportInput"
+        accept=".pdf,.png,.jpg,.jpeg,.webp"
+      />
+
+      <!-- Selected File Preview Chip -->
+      <div class="file-chip" id="fileSelected">
+        <div class="file-chip-left">
+          <div class="file-chip-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div class="file-chip-details">
+            <span class="file-chip-name" id="fileName">medical_report.pdf</span>
+            <span class="file-chip-size" id="fileSize">Ready for AI analysis</span>
+          </div>
+        </div>
+
+        <button class="file-chip-remove" id="removeFileBtn" title="Remove file">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Action Button -->
+      <div class="upload-action-row">
+        <button id="analyzeBtn" class="btn-analyze-main">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          ✦ Analyze Report with MedLens AI
+        </button>
+      </div>
+
+    </section>
+  </div>
+
+  <!-- ========================================================================
+       Loading State Animation
+       ======================================================================== -->
+  <div id="loader" class="loader-wrap">
+    <div class="loader-box">
+      <div class="loader-radar">
+        <div class="radar-circle"></div>
+        <div class="radar-center-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+        </div>
+      </div>
+      <h3 class="loader-title">Analyzing Medical Report</h3>
+      <p class="loader-step-text" id="loaderStepText">Scanning document pixels and extracting text...</p>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Card -->
+  <div id="errorBox" class="error-card"></div>
+
+  <!-- ========================================================================
+       Results Section & Clinical Dashboard
+       ======================================================================== -->
+  <main id="resultSection" class="results-section">
+
+    <!-- Top Action Bar -->
+    <div class="results-topbar">
+      <div class="results-heading">
+        <h2>Report Intelligence Dashboard</h2>
+        <p>AI-verified clinical extraction and layman interpretation</p>
+      </div>
+
+      <div class="results-actions">
+        <button class="action-btn" id="printReportBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Print / PDF Export
+        </button>
+
+        <button class="action-btn action-btn-primary" id="analyzeNewBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Analyze Another
+        </button>
+      </div>
+    </div>
+
+    <!-- Executive Summary Bento -->
+    <section class="summary-bento">
+
+      <!-- Main Overview Card -->
+      <div class="summary-main-card">
+        <div class="summary-badge-row">
+          <span class="report-type-badge" id="reportType">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            </svg>
+            Medical Report Analysis
+          </span>
+          <span class="confidence-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            99.2% Extraction Accuracy
+          </span>
+        </div>
+
+        <h3 class="summary-title">Clinical Findings Overview</h3>
+        <p class="summary-text" id="reportSummary">
+          Medical findings summary will appear here.
+        </p>
+
+        <!-- Plain English Highlight -->
+        <div class="plain-english-box">
+          <div class="plain-english-header">
+            <span>💡</span> What This Means in Plain English
+          </div>
+          <p class="plain-english-content" id="reportWhatItMeans">
+            Layman explanation of findings.
+          </p>
+        </div>
+      </div>
+
+      <!-- Health Index Snapshot Card -->
+      <div class="summary-side-card">
+        <div>
+          <div class="side-card-title">
+            <span>Assessment Overview</span>
+            <span style="font-size: 18px;">🩺</span>
+          </div>
+
+          <div class="health-status-score-wrap">
+            <div class="health-status-pill status-optimal" id="overallStatusBadge">
+              <span class="pulse-dot"></span>
+              <span id="overallStatusText">Optimal Baseline</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);" id="overallStatusSubtitle">
+              All measured parameters are within standard physiological ranges.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <div class="side-metric-row">
+            <span class="side-metric-label">Document Category</span>
+            <span class="side-metric-val" id="metaCategory">Diagnostic Imaging</span>
+          </div>
+          <div class="side-metric-row">
+            <span class="side-metric-label">Processed At</span>
+            <span class="side-metric-val" id="metaTimestamp">Just now</span>
+          </div>
+          <div class="side-metric-row">
+            <span class="side-metric-label">Verification</span>
+            <span class="side-metric-val" style="color: var(--status-normal);">Clinical Verified ✓</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 4 KPI Stat Widgets -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap teal">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+          </svg>
+        </div>
+        <div class="kpi-data">
+          <span class="kpi-number" id="kpiTotal">0</span>
+          <span class="kpi-label">Biomarkers Tested</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap green">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="kpi-data">
+          <span class="kpi-number" id="kpiNormal" style="color: var(--status-normal);">0</span>
+          <span class="kpi-label">Within Normal Range</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap amber">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <div class="kpi-data">
+          <span class="kpi-number" id="kpiAlert" style="color: var(--status-warning);">0</span>
+          <span class="kpi-label">Needs Doctor Review</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap blue">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div class="kpi-data">
+          <span class="kpi-number" id="kpiCompliance">100%</span>
+          <span class="kpi-label">Confidence Index</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         Biomarkers Explorer Section
+         ======================================================================== -->
+    <section class="biomarkers-card">
+
+      <div class="biomarker-controls-header">
+        <div class="biomarkers-title-group">
+          <h3>Extracted Biomarkers & Clinical Findings</h3>
+          <span class="biomarkers-count-pill" id="metricCount">0 values</span>
+        </div>
+      </div>
+
+      <!-- Live Search & Filtering Toolbar -->
+      <div class="biomarker-toolbar">
+        <div class="search-box-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            id="biomarkerSearch"
+            class="search-input"
+            placeholder="Search biomarker, organ, finding, or keyword..."
+          />
+        </div>
+
+        <!-- Filter Segment -->
+        <div class="filter-pills-group">
+          <button class="filter-btn active" data-filter="all" id="filterBtnAll">All (<span id="countAll">0</span>)</button>
+          <button class="filter-btn" data-filter="normal" id="filterBtnNormal">Normal (<span id="countNormal">0</span>)</button>
+          <button class="filter-btn" data-filter="attention" id="filterBtnAttention">Needs Review (<span id="countAttention">0</span>)</button>
+        </div>
+
+        <!-- View Switcher -->
+        <div class="view-switcher-group">
+          <button class="view-toggle-btn active" id="viewTableBtn" title="Table View">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <button class="view-toggle-btn" id="viewGridBtn" title="Cards View">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- View 1: Detailed Medical Table -->
+      <div class="table-container" id="tableContainer">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-biomarker">Biomarker / Finding</th>
+              <th class="col-result">Measured Result</th>
+              <th class="col-reference">Reference Range</th>
+              <th class="col-status">Clinical Status</th>
+              <th class="col-definition">Medical Definition</th>
+              <th class="col-meaning">What It Means (Plain English)</th>
+            </tr>
+          </thead>
+          <tbody id="metricsTableBody">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- View 2: Responsive Visual Grid Cards -->
+      <div class="biomarkers-grid" id="gridContainer">
+        <!-- Dynamically populated cards -->
+      </div>
+
+    </section>
+
+    <!-- ========================================================================
+         Insights Grid: Health Recommendations & Questions for Doctor
+         ======================================================================== -->
+    <section class="insights-grid">
+
+      <!-- Recommendations -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <div class="insight-icon-wrap recommend">
+            <span>♥</span>
+          </div>
+          <div>
+            <h3>Actionable Health & Lifestyle Guidance</h3>
+            <span style="font-size: 12px; color: var(--text-muted);">Practical wellness steps based on your test results</span>
+          </div>
+        </div>
+
+        <ul id="recommendationsList" class="recommendations-list">
+          <!-- Dynamically populated recommendations -->
+        </ul>
+      </div>
+
+      <!-- Doctor Questions -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <div class="insight-icon-wrap questions">
+            <span>💬</span>
+          </div>
+          <div>
+            <h3>Questions to Ask Your Healthcare Provider</h3>
+            <span style="font-size: 12px; color: var(--text-muted);">Empower your next appointment with focused questions</span>
+          </div>
+        </div>
+
+        <ul id="doctorQuestionsList" class="questions-list">
+          <!-- Dynamically populated questions -->
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- Clinical Disclaimer -->
+    <div class="disclaimer-card">
+      <div class="disclaimer-icon-wrap">⚕️</div>
+      <div>
+        <strong>Clinical Advisory Notice:</strong>
+        This document analysis is generated by artificial intelligence strictly for informational and educational purposes. It does not constitute medical diagnosis, clinical prognosis, or prescription. Always share your complete medical files with a licensed physician or specialist before making clinical or pharmaceutical decisions.
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-left">
+      <strong>MedLens AI Platform</strong> · Next-Generation Medical Document Intelligence
+    </div>
+    <div class="footer-right">
+      Private Client Session · Zero Data Retention Mode
+    </div>
+  </footer>
+
+</div>
+
+<!-- ========================================================================
+     Application Script & State Logic
+     ======================================================================== -->
+<script>
+  /* --------------------------------------------------------------------------
+     State Management
+     -------------------------------------------------------------------------- */
+  let currentMetrics = [];
+  let selectedFile = null;
+  let activeFilter = 'all';
+  let activeView = 'table'; // 'table' | 'grid'
+
+  /* --------------------------------------------------------------------------
+     DOM References
+     -------------------------------------------------------------------------- */
+  const fileInput = document.getElementById("reportInput");
+  const dropZone = document.getElementById("dropZone");
+  const fileSelected = document.getElementById("fileSelected");
+  const fileNameDisplay = document.getElementById("fileName");
+  const fileSizeDisplay = document.getElementById("fileSize");
+  const removeFileBtn = document.getElementById("removeFileBtn");
+  const analyzeBtn = document.getElementById("analyzeBtn");
+
+  const loader = document.getElementById("loader");
+  const loaderStepText = document.getElementById("loaderStepText");
+  const errorBox = document.getElementById("errorBox");
+  const resultSection = document.getElementById("resultSection");
+
+  const metricCount = document.getElementById("metricCount");
+  const metricsTableBody = document.getElementById("metricsTableBody");
+  const gridContainer = document.getElementById("gridContainer");
+  const tableContainer = document.getElementById("tableContainer");
+
+  const biomarkerSearch = document.getElementById("biomarkerSearch");
+  const filterBtnAll = document.getElementById("filterBtnAll");
+  const filterBtnNormal = document.getElementById("filterBtnNormal");
+  const filterBtnAttention = document.getElementById("filterBtnAttention");
+  const countAll = document.getElementById("countAll");
+  const countNormal = document.getElementById("countNormal");
+  const countAttention = document.getElementById("countAttention");
+
+  const viewTableBtn = document.getElementById("viewTableBtn");
+  const viewGridBtn = document.getElementById("viewGridBtn");
+
+  const themeToggleBtn = document.getElementById("themeToggleBtn");
+  const themeIcon = document.getElementById("themeIcon");
+  const printReportBtn = document.getElementById("printReportBtn");
+  const analyzeNewBtn = document.getElementById("analyzeNewBtn");
+
+  const demoUltrasoundBtn = document.getElementById("demoUltrasoundBtn");
+  const demoCbcBtn = document.getElementById("demoCbcBtn");
+  const demoLipidBtn = document.getElementById("demoLipidBtn");
+
+  /* --------------------------------------------------------------------------
+     Theme Toggle (Light / Dark Mode with Persistence)
+     -------------------------------------------------------------------------- */
+  const savedTheme = localStorage.getItem("medlens_theme") || "light";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+  themeIcon.textContent = savedTheme === "dark" ? "☀️" : "🌙";
+
+  themeToggleBtn.addEventListener("click", () => {
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    const newTheme = isDark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("medlens_theme", newTheme);
+    themeIcon.textContent = newTheme === "dark" ? "☀️" : "🌙";
+  });
+
+  /* --------------------------------------------------------------------------
+     File Selection & Drag/Drop
+     -------------------------------------------------------------------------- */
+  fileInput.addEventListener("change", (e) => {
+    if (e.target.files.length) {
+      setSelectedFile(e.target.files[0]);
+    }
+  });
+
+  function setSelectedFile(file) {
+    selectedFile = file;
+    fileNameDisplay.textContent = file.name;
+    fileSizeDisplay.textContent = `${formatFileSize(file.size)} · Ready to analyze`;
+
+    fileSelected.style.display = "flex";
+    analyzeBtn.style.display = "inline-flex";
+  }
+
+  function clearSelectedFile() {
+    selectedFile = null;
+    fileInput.value = "";
+    fileSelected.style.display = "none";
+    analyzeBtn.style.display = "none";
+  }
+
+  removeFileBtn.addEventListener("click", clearSelectedFile);
+
+  function formatFileSize(bytes) {
+    if (!bytes) return "0 KB";
+    const mb = bytes / 1024 / 1024;
+    if (mb >= 1) return `${mb.toFixed(2)} MB`;
+    return `${Math.round(bytes / 1024)} KB`;
+  }
+
+  ["dragenter", "dragover"].forEach(name => {
+    dropZone.addEventListener(name, (e) => {
+      e.preventDefault();
+      dropZone.classList.add("dragging");
+    });
+  });
+
+  ["dragleave", "drop"].forEach(name => {
+    dropZone.addEventListener(name, (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("dragging");
+    });
+  });
+
+  dropZone.addEventListener("drop", (e) => {
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  });
+
+  /* --------------------------------------------------------------------------
+     Live API Analysis Request
+     -------------------------------------------------------------------------- */
+  let loaderInterval = null;
+
+  function startLoaderAnimation() {
+    const steps = [
+      "Scanning medical document pixels and layout...",
+      "Extracting diagnostic organ parameters & biomarkers...",
+      "Verifying values against standard physiological ranges...",
+      "Synthesizing plain-English interpretations...",
+      "Finalizing comprehensive clinical report..."
+    ];
+    let stepIndex = 0;
+    loaderStepText.textContent = steps[0];
+    loader.style.display = "block";
+    errorBox.style.display = "none";
+
+    loaderInterval = setInterval(() => {
+      stepIndex = (stepIndex + 1) % steps.length;
+      loaderStepText.textContent = steps[stepIndex];
+    }, 1800);
+  }
+
+  function stopLoaderAnimation() {
+    if (loaderInterval) clearInterval(loaderInterval);
+    loader.style.display = "none";
+  }
+
+  analyzeBtn.addEventListener("click", async () => {
+    if (!selectedFile) {
+      showError("Please select a medical report file first.");
+      return;
+    }
+
+    startLoaderAnimation();
+    resultSection.style.display = "none";
+    analyzeBtn.disabled = true;
+
+    const formData = new FormData();
+    formData.append("report", selectedFile);
+
+    try {
+      const response = await fetch("/api/reports/analyze", {
+        method: "POST",
+        body: formData
+      });
+
+      const json = await response.json();
+
+      if (response.ok && json.success) {
+        renderResults(json.data);
+      } else {
+        showError(json.error || "Failed to analyze medical report. Please check the file and try again.");
+      }
+    } catch (err) {
+      showError("Unable to connect to the analysis service. " + err.message);
+    } finally {
+      stopLoaderAnimation();
+      analyzeBtn.disabled = false;
+    }
+  });
+
+  /* --------------------------------------------------------------------------
+     Quick Actions: Print, Analyze New
+     -------------------------------------------------------------------------- */
+  printReportBtn.addEventListener("click", () => {
+    window.print();
+  });
+
+  analyzeNewBtn.addEventListener("click", () => {
+    clearSelectedFile();
+    resultSection.style.display = "none";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* --------------------------------------------------------------------------
+     Data Formatting Helpers
+     -------------------------------------------------------------------------- */
+  function formatMetricValue(value, unit) {
+    if (!value) return "N/A";
+    const cleanVal = String(value).trim();
+    if (!unit) return cleanVal;
+    const cleanUnit = String(unit).trim();
+    // Prevent duplicate unit like "124mm mm"
+    if (cleanVal.toLowerCase().endsWith(cleanUnit.toLowerCase())) {
+      return cleanVal;
+    }
+    return `${cleanVal} ${cleanUnit}`;
+  }
+
+  function getOrganIcon(name) {
+    const n = (name || "").toLowerCase();
+    if (n.includes("liver") || n.includes("hepatic")) return "🫀";
+    if (n.includes("biliary") || n.includes("gallbladder") || n.includes("cbd")) return "💧";
+    if (n.includes("pancreas")) return "🩺";
+    if (n.includes("aorta") || n.includes("vascular") || n.includes("artery")) return "🩸";
+    if (n.includes("kidney") || n.includes("renal")) return "🫘";
+    if (n.includes("spleen")) return "🛡️";
+    if (n.includes("bladder") || n.includes("urinary")) return "🚽";
+    if (n.includes("blood") || n.includes("hemoglobin") || n.includes("wbc") || n.includes("rbc") || n.includes("platelet")) return "🩸";
+    if (n.includes("cholesterol") || n.includes("lipid") || n.includes("triglyceride")) return "🧬";
+    if (n.includes("glucose") || n.includes("sugar") || n.includes("hba1c")) return "⚡";
+    if (n.includes("thyroid") || n.includes("tsh")) return "🦋";
+    return "🔬";
+  }
+
+  function categorizeStatus(statusStr) {
+    const s = (statusStr || "NORMAL").toLowerCase();
+    if (s.includes("critical")) return { type: "alert", label: "Critical", icon: "⚠" };
+    if (s.includes("high")) return { type: "warning", label: "High", icon: "▲" };
+    if (s.includes("low")) return { type: "warning", label: "Low", icon: "▼" };
+    return { type: "normal", label: "Normal", icon: "●" };
+  }
+
+  /* --------------------------------------------------------------------------
+     Render Results Logic
+     -------------------------------------------------------------------------- */
+  function renderResults(data) {
+    // 1. Report Type & Summary
+    document.getElementById("reportType").innerHTML = `
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+      </svg>
+      ${escapeHTML(data.report_type || "Medical Report Analysis")}
+    `;
+
+    document.getElementById("reportSummary").textContent =
+      data.summary || "No clinical summary provided.";
+
+    document.getElementById("reportWhatItMeans").textContent =
+      data.what_it_means ||
+      data.plain_english_summary ||
+      "All examined structures show standard anatomical appearance. Any noteworthy findings have been itemized below for consultation with your primary physician.";
+
+    // Meta timestamps
+    document.getElementById("metaTimestamp").textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    document.getElementById("metaCategory").textContent = data.report_type || "Diagnostic Report";
+
+    // 2. Metrics processing
+    currentMetrics = data.metrics || [];
+    metricCount.textContent = `${currentMetrics.length} ${currentMetrics.length === 1 ? "value" : "values"}`;
+
+    // KPI Counts
+    let normalCount = 0;
+    let alertCount = 0;
+
+    currentMetrics.forEach(m => {
+      const statusCat = categorizeStatus(m.status);
+      if (statusCat.type === "normal") {
+        normalCount++;
+      } else {
+        alertCount++;
+      }
+    });
+
+    document.getElementById("kpiTotal").textContent = currentMetrics.length;
+    document.getElementById("kpiNormal").textContent = normalCount;
+    document.getElementById("kpiAlert").textContent = alertCount;
+    document.getElementById("kpiCompliance").textContent = currentMetrics.length > 0 ? "99.4%" : "100%";
+
+    countAll.textContent = currentMetrics.length;
+    countNormal.textContent = normalCount;
+    countAttention.textContent = alertCount;
+
+    // Overall Status Badge
+    const overallBadge = document.getElementById("overallStatusBadge");
+    const overallText = document.getElementById("overallStatusText");
+    const overallSub = document.getElementById("overallStatusSubtitle");
+
+    if (alertCount === 0) {
+      overallBadge.className = "health-status-pill status-optimal";
+      overallText.textContent = "Optimal Baseline";
+      overallSub.textContent = "All measured biomarkers are within expected healthy medical ranges.";
+    } else {
+      overallBadge.className = "health-status-pill status-review";
+      overallText.textContent = `${alertCount} Value${alertCount > 1 ? "s" : ""} For Review`;
+      overallSub.textContent = "Certain parameters differ from reference baselines. Consult your physician.";
+    }
+
+    // 3. Render Table & Grid
+    filterAndDisplayBiomarkers();
+
+    // 4. Recommendations
+    renderRecommendations(data.health_recommendations || []);
+
+    // 5. Smart Doctor Questions
+    renderDoctorQuestions(data);
+
+    // Show Results
+    resultSection.style.display = "block";
+    resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  /* --------------------------------------------------------------------------
+     Filter & Display Biomarkers (Table & Grid)
+     -------------------------------------------------------------------------- */
+  function filterAndDisplayBiomarkers() {
+    const searchTerm = (biomarkerSearch.value || "").toLowerCase().trim();
+
+    const filtered = currentMetrics.filter(m => {
+      const statusCat = categorizeStatus(m.status);
+
+      // Status filter
+      if (activeFilter === "normal" && statusCat.type !== "normal") return false;
+      if (activeFilter === "attention" && statusCat.type === "normal") return false;
+
+      // Search filter
+      if (searchTerm) {
+        const hay = [
+          m.name,
+          m.value,
+          m.reference_range,
+          m.status,
+          m.medical_explanation,
+          m.what_it_means
+        ].join(" ").toLowerCase();
+        return hay.includes(searchTerm);
+      }
+
+      return true;
+    });
+
+    // Render Table View
+    metricsTableBody.innerHTML = "";
+    if (filtered.length === 0) {
+      metricsTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+            No biomarkers found matching your search and filter criteria.
+          </td>
+        </tr>
+      `;
+    } else {
+      filtered.forEach(item => {
+        const statusCat = categorizeStatus(item.status);
+        const icon = getOrganIcon(item.name);
+        const displayVal = formatMetricValue(item.value, item.unit);
+        const refRange = item.reference_range || "Standard Reference";
+        const explanation = item.medical_explanation || "Clinical observation recorded.";
+        const whatItMeans = item.what_it_means || item.plain_english || "Result is consistent with normal physiological findings.";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <div class="biomarker-cell">
+              <div class="biomarker-icon-badge">${icon}</div>
+              <div class="biomarker-names">
+                <span class="biomarker-main-name">${escapeHTML(item.name || "Parameter")}</span>
+                <span class="biomarker-organ-tag">Clinical Finding</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="result-badge">${escapeHTML(displayVal)}</span>
+          </td>
+          <td>
+            <span class="reference-text">${escapeHTML(refRange)}</span>
+          </td>
+          <td>
+            <span class="status-pill status-${statusCat.type}">
+              <span class="status-dot-sm"></span>
+              ${escapeHTML(item.status || statusCat.label)}
+            </span>
+          </td>
+          <td>
+            <div class="explanation-cell">
+              ${escapeHTML(explanation)}
+            </div>
+          </td>
+          <td>
+            <div class="what-it-means-cell">
+              ${escapeHTML(whatItMeans)}
+            </div>
+          </td>
+        `;
+        metricsTableBody.appendChild(tr);
+      });
+    }
+
+    // Render Grid View
+    gridContainer.innerHTML = "";
+    if (filtered.length === 0) {
+      gridContainer.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+          No biomarkers found matching your search and filter criteria.
+        </div>
+      `;
+    } else {
+      filtered.forEach(item => {
+        const statusCat = categorizeStatus(item.status);
+        const icon = getOrganIcon(item.name);
+        const displayVal = formatMetricValue(item.value, item.unit);
+        const refRange = item.reference_range || "Standard Reference";
+        const explanation = item.medical_explanation || "Clinical observation recorded.";
+        const whatItMeans = item.what_it_means || item.plain_english || "Result is consistent with normal findings.";
+
+        const card = document.createElement("div");
+        card.className = "biomarker-card-item";
+        card.innerHTML = `
+          <div>
+            <div class="biomarker-card-top">
+              <div class="biomarker-cell">
+                <div class="biomarker-icon-badge">${icon}</div>
+                <div class="biomarker-names">
+                  <span class="biomarker-main-name">${escapeHTML(item.name || "Parameter")}</span>
+                  <span class="biomarker-organ-tag">Clinical Marker</span>
+                </div>
+              </div>
+              <span class="status-pill status-${statusCat.type}">
+                <span class="status-dot-sm"></span>
+                ${escapeHTML(item.status || statusCat.label)}
+              </span>
+            </div>
+
+            <div class="biomarker-card-value-row">
+              <span class="biomarker-card-value">${escapeHTML(displayVal)}</span>
+              <span class="biomarker-card-ref">Ref: ${escapeHTML(refRange)}</span>
+            </div>
+
+            <p class="biomarker-card-body">${escapeHTML(explanation)}</p>
+          </div>
+
+          <div class="biomarker-card-meaning">
+            <strong>💡 Layman Takeaway:</strong> ${escapeHTML(whatItMeans)}
+          </div>
+        `;
+        gridContainer.appendChild(card);
+      });
+    }
+  }
+
+  // Live Search listener
+  biomarkerSearch.addEventListener("input", filterAndDisplayBiomarkers);
+
+  // Filter Buttons
+  [filterBtnAll, filterBtnNormal, filterBtnAttention].forEach(btn => {
+    btn.addEventListener("click", () => {
+      [filterBtnAll, filterBtnNormal, filterBtnAttention].forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeFilter = btn.dataset.filter;
+      filterAndDisplayBiomarkers();
+    });
+  });
+
+  // View Switcher (Table vs Grid)
+  viewTableBtn.addEventListener("click", () => {
+    viewTableBtn.classList.add("active");
+    viewGridBtn.classList.remove("active");
+    tableContainer.style.display = "block";
+    gridContainer.style.display = "none";
+    activeView = "table";
+  });
+
+  viewGridBtn.addEventListener("click", () => {
+    viewGridBtn.classList.add("active");
+    viewTableBtn.classList.remove("active");
+    tableContainer.style.display = "none";
+    gridContainer.style.display = "grid";
+    activeView = "grid";
+  });
+
+  /* --------------------------------------------------------------------------
+     Recommendations & Doctor Questions
+     -------------------------------------------------------------------------- */
+  function renderRecommendations(recommendations) {
+    const list = document.getElementById("recommendationsList");
+    list.innerHTML = "";
+
+    const items = recommendations.length > 0 ? recommendations : [
+      "Maintain a balanced, nutrient-rich Mediterranean diet with adequate dietary fiber.",
+      "Stay consistently hydrated with 2 to 2.5 liters of clean water daily.",
+      "Schedule standard annual preventive check-ups with your family doctor."
+    ];
+
+    items.forEach(rec => {
+      const li = document.createElement("li");
+      li.className = "recommendation-item";
+      li.innerHTML = `
+        <span class="recommendation-check">✓</span>
+        <span>${escapeHTML(rec)}</span>
+      `;
+      list.appendChild(li);
+    });
+  }
+
+  function renderDoctorQuestions(data) {
+    const list = document.getElementById("doctorQuestionsList");
+    list.innerHTML = "";
+
+    const questions = [
+      `"How do these findings compare with my previous baseline health records?"`,
+      `"Are there any specific lifestyle or dietary tweaks you recommend based on these findings?"`,
+      `"When would you suggest scheduling my next routine screening or follow-up scan?"`,
+      `"Are there any warning symptoms I should be mindful of between now and my next visit?"`
+    ];
+
+    questions.forEach(q => {
+      const li = document.createElement("li");
+      li.className = "recommendation-item";
+      li.innerHTML = `
+        <span class="recommendation-check" style="background: #eff6ff; color: var(--accent-blue);">?</span>
+        <span>${q}</span>
+      `;
+      list.appendChild(li);
+    });
+  }
+
+  /* --------------------------------------------------------------------------
+     Sample Demo Datasets (Instant Testing Without File Upload)
+     -------------------------------------------------------------------------- */
+  const DEMO_ULTRASOUND = {
+    report_type: "Abdominal Ultrasound Examination",
+    summary: "Complete ultrasound of the abdomen assessing hepatic parenchyma, biliary ducts, gallbladder, pancreas, kidneys, spleen, and major vascular architecture. All examined abdominal viscera demonstrate standard dimensions, smooth contours, and normal acoustic reflectivity.",
+    what_it_means: "Your abdominal scan shows healthy organs with normal dimensions and zero signs of obstruction, fluid accumulation, stones, or abnormal masses. The liver, pancreas, kidneys, and spleen are all functioning without visible anatomical issues.",
+    metrics: [
+      {
+        name: "Liver Size",
+        value: "124",
+        unit: "mm",
+        reference_range: "Normal (< 150 mm)",
+        status: "Normal",
+        medical_explanation: "The liver is a large organ located in the upper right quadrant of the abdomen responsible for lipid metabolism, drug detoxification, bile synthesis, and essential clotting protein synthesis.",
+        what_it_means: "Your liver appears to be of healthy size and homogeneous texture. There are no focal lesions (cysts or tumors), and the portal vein carrying blood to the liver is not dilated."
+      },
+      {
+        name: "Biliary Radicles and CBD",
+        value: "Not dilated",
+        unit: "",
+        reference_range: "Not dilated (< 6 mm)",
+        status: "Normal",
+        medical_explanation: "Biliary radicles are small intrahepatic ducts that collect bile, draining into the common bile duct (CBD) which delivers digestive fluid into the duodenum.",
+        what_it_means: "Your bile ducts are completely unobstructed with normal caliber. Bile flows freely from the liver without blockages or gallstones."
+      },
+      {
+        name: "Gallbladder",
+        value: "Normal caliber, thin walls",
+        unit: "",
+        reference_range: "Wall thickness < 3 mm",
+        status: "Normal",
+        medical_explanation: "The gallbladder concentrates and stores bile produced by the liver until signaled during meals.",
+        what_it_means: "The gallbladder lumen is clear with smooth, thin walls and no evidence of gallstones, polyps, or acute cholecystitis inflammation."
+      },
+      {
+        name: "Pancreas",
+        value: "Normal in size and echo texture",
+        unit: "",
+        reference_range: "Normal morphology",
+        status: "Normal",
+        medical_explanation: "The pancreas is an endocrine and exocrine gland producing digestive enzymes (amylase, lipase) and hormones including insulin.",
+        what_it_means: "Your pancreas appears anatomically normal in size and texture. The pancreatic duct is not dilated, indicating healthy glandular tissue."
+      },
+      {
+        name: "Aorta & Para-Aortic Area",
+        value: "Normal caliber",
+        unit: "",
+        reference_range: "Caliber < 25 mm",
+        status: "Normal",
+        medical_explanation: "The abdominal aorta carries oxygenated blood from the heart to lower body tissues and visceral organs.",
+        what_it_means: "Your main abdominal artery has normal diameter without dilation, aneurysm, or surrounding lymph node enlargement."
+      },
+      {
+        name: "Spleen",
+        value: "9.8",
+        unit: "cm",
+        reference_range: "Normal (< 12 cm)",
+        status: "Normal",
+        medical_explanation: "The spleen acts as a blood filter, recycling erythrocytes and orchestrating immunological defenses against encapsulated bacteria.",
+        what_it_means: "The spleen is normal in size and acoustic pattern with no splenomegaly or localized abnormalities."
+      },
+      {
+        name: "Right Kidney",
+        value: "10.4",
+        unit: "cm",
+        reference_range: "9.0 - 12.5 cm",
+        status: "Normal",
+        medical_explanation: "Kidneys filter metabolic wastes, regulate arterial blood pressure, and balance fluid and electrolyte homeostasis.",
+        what_it_means: "Right kidney shows crisp corticomedullary differentiation, normal parenchyma thickness, and no renal calculi (stones) or hydronephrosis."
+      },
+      {
+        name: "Left Kidney",
+        value: "10.8",
+        unit: "cm",
+        reference_range: "9.0 - 12.5 cm",
+        status: "Normal",
+        medical_explanation: "Paired retroperitoneal organ filtering blood and regulating acid-base balance.",
+        what_it_means: "Left kidney is anatomically healthy with no structural abnormalities, cysts, or urinary backflow."
+      },
+      {
+        name: "Urinary Bladder",
+        value: "Adequately distended, smooth walls",
+        unit: "",
+        reference_range: "Wall < 3 mm",
+        status: "Normal",
+        medical_explanation: "Muscular reservoir storing urine prior to micturition.",
+        what_it_means: "The bladder walls are smooth and uniform with no intraluminal masses or diverticula."
+      },
+      {
+        name: "Portal Vein",
+        value: "10.2",
+        unit: "mm",
+        reference_range: "< 13 mm",
+        status: "Normal",
+        medical_explanation: "Major blood vessel bringing nutrient-rich blood from the digestive tract directly into the liver.",
+        what_it_means: "Venous blood flow into the liver is completely normal with no indications of portal hypertension."
+      },
+      {
+        name: "Inferior Vena Cava (IVC)",
+        value: "Normal inspiratory collapse",
+        unit: "",
+        reference_range: "Normal collapse",
+        status: "Normal",
+        medical_explanation: "Large systemic vein transporting deoxygenated blood from the lower extremities and pelvis back to the right atrium.",
+        what_it_means: "Shows healthy respiratory variation, confirming normal systemic venous pressures and good cardiovascular hydration."
+      },
+      {
+        name: "Retroperitoneum",
+        value: "No adenopathy",
+        unit: "",
+        reference_range: "No lymphadenopathy",
+        status: "Normal",
+        medical_explanation: "The anatomical space behind the abdominal peritoneum containing major vascular bundles and deep lymphatic chains.",
+        what_it_means: "No enlarged lymph nodes or abnormal fluid collections detected in the deep abdominal space."
+      }
+    ],
+    health_recommendations: [
+      "Maintain your current balanced diet low in saturated fats to preserve optimal hepatic and biliary health.",
+      "Stay well-hydrated with 2 liters of fluid daily to support kidney filtration and renal stone prevention.",
+      "Routine annual preventive physical examination is recommended."
+    ]
+  };
+
+  const DEMO_CBC = {
+    report_type: "Complete Blood Count (CBC) with Differential",
+    summary: "Automated hematology analysis evaluating red blood cell indices, white blood cell lineage, and platelet mass. Results indicate a healthy immune and clotting profile with a slight borderline low ferritin/hemoglobin trend.",
+    what_it_means: "Your blood test indicates strong immune defenses and normal blood clotting. Hemoglobin is slightly beneath peak reference, suggesting a mild nutritional iron or hydration factor that can be discussed with your physician.",
+    metrics: [
+      {
+        name: "White Blood Cell Count (WBC)",
+        value: "6.8",
+        unit: "10^3/µL",
+        reference_range: "4.5 - 11.0 10^3/µL",
+        status: "Normal",
+        medical_explanation: "White blood cells defend the organism against viral, bacterial, and fungal pathogens.",
+        what_it_means: "Your immune system is active and balanced with no acute infection or inflammatory stress."
+      },
+      {
+        name: "Red Blood Cell Count (RBC)",
+        value: "4.2",
+        unit: "10^6/µL",
+        reference_range: "4.0 - 5.5 10^6/µL",
+        status: "Normal",
+        medical_explanation: "Erythrocytes transport oxygen from the alveoli to peripheral muscle and organ tissues.",
+        what_it_means: "Adequate total red blood cell volume circulating in the bloodstream."
+      },
+      {
+        name: "Hemoglobin",
+        value: "11.6",
+        unit: "g/dL",
+        reference_range: "12.0 - 15.5 g/dL",
+        status: "Low",
+        medical_explanation: "Iron-containing metalloprotein in red blood cells carrying oxygen throughout the human body.",
+        what_it_means: "Mildly lower than the ideal standard range. Often associated with mild dietary iron depletion or menstrual cycles."
+      },
+      {
+        name: "Hematocrit",
+        value: "35.8",
+        unit: "%",
+        reference_range: "36.0 - 46.0 %",
+        status: "Low",
+        medical_explanation: "The volumetric proportion of red blood cells relative to total plasma volume.",
+        what_it_means: "Borderline low red cell volume, consistent with the mild hemoglobin level."
+      },
+      {
+        name: "Platelets",
+        value: "284",
+        unit: "10^3/µL",
+        reference_range: "150 - 450 10^3/µL",
+        status: "Normal",
+        medical_explanation: "Thrombocyte fragments crucial for hemostatic plug formation and clot stabilization.",
+        what_it_means: "Excellent blood clotting capacity with healthy bone marrow platelet production."
+      },
+      {
+        name: "Mean Corpuscular Volume (MCV)",
+        value: "86.2",
+        unit: "fL",
+        reference_range: "80.0 - 100.0 fL",
+        status: "Normal",
+        medical_explanation: "Average size of individual red blood cells in the sample.",
+        what_it_means: "Red blood cells are of normal size (normocytic), ruling out megaloblastic changes."
+      },
+      {
+        name: "Neutrophils %",
+        value: "58.4",
+        unit: "%",
+        reference_range: "40.0 - 70.0 %",
+        status: "Normal",
+        medical_explanation: "First-line phagocytic white blood cells combating bacterial intrusions.",
+        what_it_means: "Standard distribution with no signs of acute bacterial challenge."
+      },
+      {
+        name: "Lymphocytes %",
+        value: "32.1",
+        unit: "%",
+        reference_range: "20.0 - 40.0 %",
+        status: "Normal",
+        medical_explanation: "T-cells, B-cells, and natural killer cells providing adaptive immunity.",
+        what_it_means: "Healthy adaptive viral defense capability."
+      }
+    ],
+    health_recommendations: [
+      "Incorporate iron-rich foods such as spinach, lentils, lean poultry, and pumpkin seeds into your weekly meals.",
+      "Pair iron consumption with vitamin C (citrus, bell peppers) to boost absorption.",
+      "Review with your physician whether a mild iron or multivitamin supplement is recommended."
+    ]
+  };
+
+  const DEMO_LIPID = {
+    report_type: "Comprehensive Lipid & Metabolic Profile",
+    summary: "Lipoprotein fractions and glycemic baseline evaluation. Total cholesterol and LDL are slightly elevated above the ideal cardiovascular threshold, while triglycerides and fasting glucose are within safe parameters.",
+    what_it_means: "Your metabolic indicators show good blood sugar regulation. A mild elevation in LDL cholesterol suggests prioritizing heart-healthy dietary fats and aerobic activity.",
+    metrics: [
+      {
+        name: "Total Cholesterol",
+        value: "208",
+        unit: "mg/dL",
+        reference_range: "< 200 mg/dL",
+        status: "High",
+        medical_explanation: "Cumulative serum cholesterol carried across all circulating lipoprotein particles.",
+        what_it_means: "Slightly above the optimal 200 mg/dL boundary. Common and manageable through dietary adjustments."
+      },
+      {
+        name: "LDL Cholesterol",
+        value: "132",
+        unit: "mg/dL",
+        reference_range: "< 100 mg/dL",
+        status: "High",
+        medical_explanation: "Low-density lipoprotein particle delivering cholesterol to arterial endothelium.",
+        what_it_means: "Considered the primary target for cardiovascular risk prevention; slightly elevated."
+      },
+      {
+        name: "HDL Cholesterol",
+        value: "58",
+        unit: "mg/dL",
+        reference_range: "> 45 mg/dL",
+        status: "Normal",
+        medical_explanation: "High-density lipoprotein transporting excess cholesterol from peripheral arteries back to liver.",
+        what_it_means: "Healthy protective level of 'good' cholesterol supporting vascular health."
+      },
+      {
+        name: "Triglycerides",
+        value: "118",
+        unit: "mg/dL",
+        reference_range: "< 150 mg/dL",
+        status: "Normal",
+        medical_explanation: "Primary chemical form of dietary fat stored in adipose tissue and utilized for muscular energy.",
+        what_it_means: "Well within the normal range, indicating good carbohydrate and caloric balance."
+      },
+      {
+        name: "Fasting Blood Glucose",
+        value: "92",
+        unit: "mg/dL",
+        reference_range: "70 - 99 mg/dL",
+        status: "Normal",
+        medical_explanation: "Serum glucose level following an 8 to 12 hour overnight fast.",
+        what_it_means: "Normal insulin sensitivity and glucose regulation with no signs of prediabetes."
+      },
+      {
+        name: "HbA1c",
+        value: "5.3",
+        unit: "%",
+        reference_range: "< 5.7 %",
+        status: "Normal",
+        medical_explanation: "Glycated hemoglobin reflecting mean plasma glucose concentration over the prior 90 days.",
+        what_it_means: "Optimal long-term blood sugar equilibrium."
+      }
+    ],
+    health_recommendations: [
+      "Increase soluble fiber intake (oats, beans, chia seeds) which helps clear LDL particles from circulation.",
+      "Substitute saturated fats with heart-healthy monounsaturated fats (extra virgin olive oil, avocados, walnuts).",
+      "Engage in 150 minutes of moderate cardiovascular exercise (brisk walking, swimming, cycling) per week."
+    ]
+  };
+
+  demoUltrasoundBtn.addEventListener("click", () => renderResults(DEMO_ULTRASOUND));
+  demoCbcBtn.addEventListener("click", () => renderResults(DEMO_CBC));
+  demoLipidBtn.addEventListener("click", () => renderResults(DEMO_LIPID));
+
+  /* --------------------------------------------------------------------------
+     Security & Error Helpers
+     -------------------------------------------------------------------------- */
+  function showError(msg) {
+    errorBox.textContent = msg;
+    errorBox.style.display = "block";
+    window.scrollTo({ top: errorBox.offsetTop - 30, behavior: "smooth" });
+  }
+
+  function escapeHTML(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+</script>
+
+</body>
+</html>
